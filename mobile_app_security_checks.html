@@ -19,22 +19,22 @@
         }
         .card {
             background: #fff;
-            padding: 20px;
+            padding: 40px;
             margin: 15px 0;
-            border-radius: 8px;
+            border-radius: 40px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1, h2 {
             text-align: center;
         }
         .card h3 {
-            color: #333;
+            color: #000;
         }
         .additional-content {
-            background: #fff;
-            padding: 20px;
+            background: #e0f2ff;
+            padding: 40px;
             margin-top: 20px;
-            border-radius: 8px;
+            border-radius: 40px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
     </style>
@@ -42,9 +42,10 @@
 <body>
     <div class="container">
         <h1>Mobile App Security: Key Points</h1>
-        
+        <br>
         <div class="card">
             <h3>Insecure Data Storage</h3>
+			<br>
             <p>Storing sensitive data improperly, such as in SharedPreferences or local databases without encryption, makes it easy for attackers to extract information.</p>
             <p><strong>How to Find the Issue:</strong></p>
             <p>- Use static analysis tools like MobSF to scan for insecure storage practices.</p>
@@ -57,6 +58,7 @@
         
         <div class="card">
             <h3>Weak Authentication and Authorization</h3>
+			<br>
             <p>Poor authentication mechanisms, like weak passwords or missing multi-factor authentication, can make your app vulnerable to unauthorized access.</p>
             <p><strong>How to Find the Issue:</strong></p>
             <p>- Perform brute-force testing to check if authentication is weak.</p>
@@ -69,6 +71,7 @@
         
         <div class="card">
             <h3>Insecure API Communication</h3>
+			<br>
             <p>APIs are a common attack vector, and exposing sensitive endpoints without proper security can lead to data breaches.</p>
             <p><strong>How to Find the Issue:</strong></p>
             <p>- Use tools like Postman or Burp Suite to inspect API requests and responses.</p>
@@ -79,25 +82,35 @@
             <p>- Use certificate pinning to prevent MITM (Man-in-the-Middle) attacks.</p>
         </div>
         
-        <div class="additional-content">
+        <div class="card">
             <h2>Additional Security Tips</h2>
+			<br>
             <ul>
-                <li>Regularly update dependencies and use the latest security patches.</li>
-                <li>Minimize logging of sensitive information.</li>
-                <li>Use network security configuration to restrict clear-text traffic.</li>
-                <li>Employ security testing tools like OWASP ZAP, MobSF, and Burp Suite.</li>
-                <li>Ensure secure app updates by signing APKs with a trusted key.</li>
+                <p>Regularly update dependencies and use the latest security patches.</p>
+                <p>Minimize logging of sensitive information.</p>
+                <p>Use network security configuration to restrict clear-text traffic.</p>
+                <p>Employ security testing tools like OWASP ZAP, MobSF, and Burp Suite.</p>
+                <p>Ensure secure app updates by signing APKs with a trusted key.</p>
             </ul>
         </div>
         
         <div class="additional-content">
             <h2>Conclusion</h2>
+			<br>
             <p>Ensuring mobile app security is a continuous process that requires a proactive approach. Developers should integrate security practices into the development lifecycle, regularly test for vulnerabilities, and stay updated on the latest threats and mitigation strategies.</p>
             <p>By implementing these security measures, you can build a robust and secure Android application that protects user data and prevents malicious attacks.</p>
+			<p>Is your app secure? Start implementing these measures today! 🚀</p>
+			
+			<div>
+			<br>
+			<br>
+            <h3>About Me :</h3>
+            <p><strong>Sourabh Chauhan</strong></p>
+            <p>I'm a professional Android application developer, having expertise in mobile apps security measurements and implementations.</p>
         </div>
-      <div>
-        <p>Is your app secure? Start implementing these measures today! 🚀</p>
         </div>
+
+	  
     </div>
 </body>
 </html>
