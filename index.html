@@ -3,50 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Android App Security</title>
+    <title>Cards List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             background-color: #f4f4f4;
         }
         .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
+            width: 50%;
         }
-        .card {
-            background: #fff;
-            padding: 40px;
-            margin: 15px 0;
-            border-radius: 40px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            text-align: center;
+		h1, h2 {
+            color: #03334f;
         }
         .card h3 {
-            color: #000;
+            color: #03334f;
         }
-        .additional-content {
-            background: #e0f2ff;
-            padding: 40px;
-            margin-top: 20px;
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 24px 0;
             border-radius: 40px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.02);
         }
     </style>
 </head>
-
-<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
-
-<!-- Load the element definition -->
-<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
-
-<!-- Simply set the `src` attribute to your MD file and win -->
-<zero-md src="mobile_app_security_checks.html"></zero-md>
-
-</html>  
+<body>
+    <div class="container">
+        <div class="card" onclick="window.location.href='mobile_app_security_checks.html'">
+            <h3>Mobile App Security: Key Points</h3>
+            <p>Ensuring mobile app security is a continuous process that requires a proactive approach. Developers should integrate security practices into the development lifecycle, regularly test for vulnerabilities, and stay updated on the latest threats and mitigation strategies.</p>
+        </div>
+    </div>
+</body>
+</html>
