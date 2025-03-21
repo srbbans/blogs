@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detecting Magisk DenyList in an Android Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        .card {
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-weight: 500;
+            color: #03334f;
+        }
+        .section-title {
+            color: #03334f;
+            font-weight: bold;
+        }
+        .check-result {
+            font-size: 18px;
+            font-weight: 500;
+            color: #03334f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="center-align section-title">Detecting Magisk DenyList in an Android Application</h3>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">Understanding Magisk DenyList</span>
+                <p>Magisk DenyList is a feature that allows users to hide Magisk’s presence from selected applications. It works by:</p>
+                <ul>
+                    <li>Hiding Magisk-related system properties (`getprop` values).</li>
+                    <li>Blocking access to files and directories linked to Magisk.</li>
+                    <li>Preventing detection through `/proc` filesystem modifications.</li>
+                    <li>Hooking system libraries to bypass security checks.</li>
+                </ul>
+                <p>This makes it difficult for apps to detect root or modifications, but with advanced detection techniques, we can still identify suspicious activity.</p>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">System Property Check</span>
+                <p class="section-title">How It Works:</p>
+                <p>Magisk DenyList modifies or removes certain system properties to hide its presence. By checking for missing or unexpected values, we can detect tampering.</p>
+                <pre><code>fun isMagiskTamperingWithProps(): Boolean {
+    val properties = mapOf(
+        "ro.boot.verifiedbootstate" to listOf("green", "yellow", "orange", "red"),
+        "ro.boot.vbmeta.device_state" to listOf("locked", "unlocked"),
+        "ro.boot.veritymode" to listOf("enforcing", "disabled")
+    )
+    return properties.any { (prop, validValues) ->
+        val value = try {
+            Runtime.getRuntime().exec("getprop $prop").inputStream.bufferedReader().readText().trim()
+        } catch (e: Exception) { null }
+        value == null || value.isEmpty() || !validValues.contains(value.lowercase())
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">Process Memory Check</span>
+                <p class="section-title">How It Works:</p>
+                <p>By examining the process memory map (`/proc/self/maps`), we can check if suspicious entries like `zygisk` or `magisk` are loaded, indicating Magisk presence.</p>
+                <pre><code>fun isProcMapsTampered(): Boolean {
+    return try {
+        val process = Runtime.getRuntime().exec("cat /proc/self/maps")
+        val output = process.inputStream.bufferedReader().readText()
+        if (output.isEmpty()) return false
+        val suspiciousEntries = listOf("zygisk", "magisk", "denylist", "ptrace_scope", "hidepid")
+        suspiciousEntries.any { entry -> output.contains(entry, ignoreCase = true) }
+    } catch (e: Exception) {
+        false
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">Library Hook Check</span>
+                <p class="section-title">How It Works:</p>
+                <p>Magisk often hooks system libraries like `libc.so` to bypass detection mechanisms. We check if `libc.so` has unexpected modifications.</p>
+                <pre><code>fun isLibcHooked(): Boolean {
+    return try {
+        val process = Runtime.getRuntime().exec("ls -l /system/lib64/libc.so")
+        val output = process.inputStream.bufferedReader().readText()
+        output.contains("magisk") || output.contains("zygisk")
+    } catch (e: Exception) {
+        false
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">Final Detection Combination</span>
+                <p class="section-title">How It Works:</p>
+                <p>Combining all the checks, we get a robust Magisk DenyList detection mechanism.</p>
+                <pre><code>fun isMagiskDenyListActive(): Boolean {
+    return isMagiskTamperingWithProps() || isProcMapsTampered() || isLibcHooked()
+}</code></pre>
+                <p class="section-title">Usage Example:</p>
+                <pre><code>if (isMagiskDenyListActive()) {
+    Log.w("Security", "⚠️ Magisk DenyList Detected! Taking necessary actions.")
+} else {
+    Log.i("Security", "✅ No Magisk DenyList interference detected.")
+}</code></pre>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
