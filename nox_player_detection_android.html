@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detecting NOX Player in an Android Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        .card {
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-weight: 500;
+            color: #03334f;
+        }
+        .section-title {
+            color: #03334f;
+            font-weight: bold;
+        }
+        pre {
+            background-color: #263238;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="center-align section-title">Detecting NOX Player in an Android Application</h3>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">Why Detect NOX Player?</span>
+                <p>As an Android developer, it's essential to know if your app is running on an emulator like NOX Player. NOX is often used for gaming, automation, and sometimes even for bypassing security measures. Detecting NOX Player can help in implementing security restrictions or optimizing app performance accordingly.</p>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">1. Checking Build Properties</span>
+                <p class="section-title">How It Works:</p>
+                <p>Emulators, including NOX, often have unique build properties that differ from real devices. We can check for specific `ro.product` properties that indicate an emulator environment.</p>
+                <pre><code>fun isNoxPlayer(): Boolean {
+    val buildProps = listOf(
+        "ro.product.manufacturer" to "Nox", 
+        "ro.product.brand" to "Nox", 
+        "ro.product.model" to "Nox", 
+        "ro.hardware" to "nox"
+    )
+    
+    return buildProps.any { (prop, expectedValue) ->
+        val value = try {
+            Runtime.getRuntime().exec("getprop $prop").inputStream.bufferedReader().readText().trim()
+        } catch (e: Exception) {
+            ""
+        }
+        value.equals(expectedValue, ignoreCase = true)
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">2. Checking for NOX-Specific Files</span>
+                <p class="section-title">How It Works:</p>
+                <p>Emulators leave traces in the file system that are not present on physical devices. We can check for NOX-specific files.</p>
+                <pre><code>fun hasNoxFiles(): Boolean {
+    val filesToCheck = listOf(
+        "/system/bin/androVM-prop",
+        "/system/bin/microvirt-prop",
+        "/system/lib/libdroid4x.so",
+        "/system/bin/nox-vbox-sf"
+    )
+    
+    return filesToCheck.any { filePath ->
+        File(filePath).exists()
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">3. Checking Installed Apps (NOX-Specific Packages)</span>
+                <pre><code>fun hasNoxPackages(context: Context): Boolean {
+    val packageManager = context.packageManager
+    val noxPackages = listOf(
+        "com.bignox.app.store",
+        "com.vphone.launcher",
+        "com.microvirt.launcher"
+    )
+    
+    return noxPackages.any { packageName ->
+        try {
+            packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">4. Checking CPU Architecture</span>
+                <pre><code>fun isEmulatorCpu(): Boolean {
+    return Build.SUPPORTED_ABIS.any { it.contains("x86", ignoreCase = true) }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="card white">
+            <div class="card-content">
+                <span class="card-title">Combining All Checks</span>
+                <pre><code>fun isRunningOnNox(context: Context): Boolean {
+    return isNoxPlayer() || hasNoxFiles() || hasNoxPackages(context) || isEmulatorCpu()
+}</code></pre>
+                <pre><code>if (isRunningOnNox(applicationContext)) {
+    Log.w("Security", "⚠️ NOX Player Detected! Restricting app access.")
+} else {
+    Log.i("Security", "✅ Running on a real device.")
+}</code></pre>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
